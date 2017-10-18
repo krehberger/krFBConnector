@@ -26,6 +26,8 @@ Set-FBPhonebookEntry -phonebookID 1 -phonebookEntryID '4711'
     Author:         Klaus Rehberger
     Creation Date:  2017-09-19
     Purpose/Change: Initial script development
+    2017-10-17      Settings for parameter phonebookID and phonebookEntryID changed because
+                    of initialization issues when using the function in a command pipeline.
 
 #>
 function Set-FBPhonebookEntry {
@@ -42,8 +44,8 @@ function Set-FBPhonebookEntry {
         # Param phonebookID
         [Parameter(Mandatory = $true,
             Position = 1,
-            ValueFromPipeline = $true,
-            HelpMessage = "ID of the Fritz!Box phonebook (Fritz!Box Standard phonebook ID is 0).")]
+            ValueFromPipeline = $false,
+            HelpMessage = "ID of the Fritz!Box phonebook Fritz!Box - Standard phonebook ID is 0.")]
         [ValidateNotNullOrEmpty()]
         [int]
         $phonebookID,
@@ -53,9 +55,9 @@ function Set-FBPhonebookEntry {
             Position = 2,
             Mandatory = $false,
             HelpMessage = "Fritz!Box phonebook Entry ID",
-            ValueFromPipeline = $true)]
+            ValueFromPipeline = $false)]
         [String]
-        $phonebookEntryID = ""
+        $phonebookEntryID
     )
 
     begin {
