@@ -195,9 +195,9 @@ function Set-FBPhonebookEntry {
             $phoneNumbers += $phoneNumber
         }
 
-        # Convert Umlaute
+        # Convert special characters
         # Currently Umlaute are not right converted to Fritz!Box phonebook via SetPhonebookEntry action
-        $FileAsConv = Convert-Umlaut -value $Contact.FileAs
+        $FileAsConv = Convert-SpecialCharacter -value $Contact.FileAs
         $query.Envelope.Body.SetPhonebookEntry.NewPhonebookEntryData.contact.person.realName = $FileAsConv
 
         for ($i = 0; $i -lt $phoneNumbers.length; $i++) {
