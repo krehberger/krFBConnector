@@ -28,6 +28,7 @@ Set-FBPhonebookEntry -phonebookID 1 -phonebookEntryID '4711'
     Purpose/Change: Initial script development
     2017-10-17      Settings for parameter phonebookID and phonebookEntryID changed because
                     of initialization issues when using the function in a command pipeline.
+    2017-10-18      Phonenumber types for 'fax' changed to 'fax_work' for Fritz!Box.
 
 #>
 function Set-FBPhonebookEntry {
@@ -66,7 +67,8 @@ function Set-FBPhonebookEntry {
             home
             work
             mobile
-            fax
+            other
+            fax_work
         }
 
         if (!$port) {(Get-FBSecurityPort)}
@@ -162,7 +164,7 @@ function Set-FBPhonebookEntry {
         }
         if ($contact.OtherTelephoneNumber) {
             $props = @{
-                numberType = 'home'
+                numberType = 'other'
                 number     = $contact.OtherTelephoneNumber
             }
             $phoneNumber = New-Object -TypeName PSObject -Property $props
@@ -170,7 +172,7 @@ function Set-FBPhonebookEntry {
         }
         if ($contact.BusinessFaxNumber) {
             $props = @{
-                numberType = 'fax'
+                numberType = 'fax_work'
                 number     = $contact.BusinessFaxNumber
             }
             $phoneNumber = New-Object -TypeName PSObject -Property $props
@@ -178,7 +180,7 @@ function Set-FBPhonebookEntry {
         }
         if ($contact.HomeFaxNumber) {
             $props = @{
-                numberType = 'fax'
+                numberType = 'fax_work'
                 number     = $contact.HomeFaxNumber
             }
             $phoneNumber = New-Object -TypeName PSObject -Property $props
@@ -186,7 +188,7 @@ function Set-FBPhonebookEntry {
         }
         if ($contact.OtherFaxNumber) {
             $props = @{
-                numberType = 'fax'
+                numberType = 'fax_work'
                 number     = $contact.OtherFaxNumber
             }
             $phoneNumber = New-Object -TypeName PSObject -Property $props
