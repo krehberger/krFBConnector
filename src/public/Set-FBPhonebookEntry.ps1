@@ -71,6 +71,8 @@ function Set-FBPhonebookEntry {
             fax_work
         }
 
+        $contactsCount = 0
+
         if (!$port) {(Get-FBSecurityPort)}
 
         $w = New-Object System.Net.WebClient
@@ -119,7 +121,7 @@ function Set-FBPhonebookEntry {
 
         #$query.OuterXml | out-file "C:\Users\klaus\Documents\query_1.xml"
 
-        # Collection of phonenumbers for an contact
+        # Collection of phonenumbers for a contact
         $phoneNumbers = @()
 
         if ($contact.BusinessTelephoneNumber) {
@@ -200,9 +202,10 @@ function Set-FBPhonebookEntry {
         $FileAsConv = Convert-SpecialCharacter -value $Contact.FileAs
         $query.Envelope.Body.SetPhonebookEntry.NewPhonebookEntryData.contact.person.realName = $FileAsConv
 
+        Write-Verbose -Message $FileAsConv
+
         for ($i = 0; $i -lt $phoneNumbers.length; $i++) {
-            Write-Output $phoneNumbers[$i].numberType
-            Write-Output $phoneNumbers[$i].number
+            Write-Verbose "$($phoneNumbers[$i].numberType): $($phoneNumbers[$i].number)"
             $number = $query.Envelope.Body.SetPhonebookEntry.NewPhonebookEntryData.contact.telephony
             $xmlEntry = '<number type="{0}" quickdial="" vanity="" prio="1" >{1}</number>' -f $phoneNumbers[$i].numberType, $phoneNumbers[$i].number
             $newNumber = [XML] $xmlEntry
@@ -216,9 +219,12 @@ function Set-FBPhonebookEntry {
 
         $r = [xml]$w.UploadString("https://fritz.box:" + $port + "/upnp/control/x_contact", $query.OuterXml)
         write-debug $r
-        Write-Verbose -Message "Contact $($contact.FileAs) uploaded to Fritz!Box phonebook."
+        Write-Verbose -Message "Contact $($contact.FileAs) added to Fritz!Box phonebook."
+
+        $contactsCount += 1
     }
 
     end {
+        write-host "Added a total of $contactsCount contacts to Fritz!Box phonebook." -ForegroundColor Cyan
     }
 }

@@ -85,6 +85,8 @@ function Get-FBOlContacts {
         MobileTelephoneNumber, OtherTelephoneNumber, BusinessFaxNumber, HomeFaxNumber, OtherFaxNumber,
         Sensitivity
 
+        write-host "Found a total of $($contacts.count) contacts from Outlook." -ForegroundColor Cyan
+
         if ($createCSV) {
             $Contacts | Export-Csv -path $csvFilePath -Encoding UTF8 -NoTypeInformation
             Write-Verbose "Contacts exported to file $csvFilePath"

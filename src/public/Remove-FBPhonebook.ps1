@@ -71,7 +71,7 @@ function Remove-FBPhonebook {
             try {
                 $ErrorActionPreference = 'Stop'
                 $pbook = get-fbPhonebook -phonebookID $phonebookID -export -phonebookpath $backupPhonebookPath
-                Write-Verbose -Message "Fritz!Box Phonebook with ID $phonebookID, name: $pbook.name saved on $backupPhonebookPath."
+                # Write-Verbose -Message "Fritz!Box Phonebook with ID $phonebookID, name: $($pbook.name) saved on $backupPhonebookPath."
             }
             catch {
                 throw ("Cannot find phonebook with ID $phonebookID. " + ($Error[0].Exception))
