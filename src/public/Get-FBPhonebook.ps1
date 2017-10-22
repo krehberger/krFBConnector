@@ -48,7 +48,7 @@ function Get-FBPhonebook {
             ParameterSetName = 'Export',
             Position = 2,
             HelpMessage = "Filename with path of exported Fritz!Box phonebook",
-            ValueFromPipeline = $true)]
+            ValueFromPipeline = $false)]
         [switch]
         $export,
 
@@ -57,7 +57,7 @@ function Get-FBPhonebook {
             ParameterSetName = 'Export',
             Position = 3,
             HelpMessage = "Filename with path of Fritz!Box phonebook to export.",
-            ValueFromPipeline = $true)]
+            ValueFromPipeline = $false)]
         [ValidateScript( {test-path -path (split-path -Path "$_")})]
         [String]
         $phonebookPath = (Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -childpath "FBPhonebook_$phonebookID.xml")
