@@ -3,3 +3,4 @@ bin/
 build/
 *.cred
 pbook.xml
+docs/develop/
