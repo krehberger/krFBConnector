@@ -89,6 +89,8 @@ function Set-FBPhonebookEntry {
 
         # Deactivate certificate check of Webclient. Necessary because Fritz!Box has a selfsigned certificate.
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+        Write-Log -Message "Start adding contacts to Fritz!Box phonebook ID $phonebookID"
     }
 
     process {
@@ -203,9 +205,12 @@ function Set-FBPhonebookEntry {
         $query.Envelope.Body.SetPhonebookEntry.NewPhonebookEntryData.contact.person.realName = $FileAsConv
 
         Write-Verbose -Message $FileAsConv
+        Write-Log -message "Add contact $FileAsConv"
 
         for ($i = 0; $i -lt $phoneNumbers.length; $i++) {
             Write-Verbose "$($phoneNumbers[$i].numberType): $($phoneNumbers[$i].number)"
+            Write-Log "$($phoneNumbers[$i].numberType): $($phoneNumbers[$i].number)"
+
             $number = $query.Envelope.Body.SetPhonebookEntry.NewPhonebookEntryData.contact.telephony
             $xmlEntry = '<number type="{0}" quickdial="" vanity="" prio="1" >{1}</number>' -f $phoneNumbers[$i].numberType, $phoneNumbers[$i].number
             $newNumber = [XML] $xmlEntry
@@ -220,11 +225,13 @@ function Set-FBPhonebookEntry {
         $r = [xml]$w.UploadString("https://fritz.box:" + $port + "/upnp/control/x_contact", $query.OuterXml)
         write-debug $r
         Write-Verbose -Message "Contact $($contact.FileAs) added to Fritz!Box phonebook."
+        Write-Log -message "Contact $($contact.FileAs) added to Fritz!Box phonebook"
 
         $contactsCount += 1
     }
 
     end {
         write-host "Added a total of $contactsCount contacts to Fritz!Box phonebook." -ForegroundColor Cyan
+        Write-Log "Added a total of $contactsCount contacts to Fritz!Box phonebook with ID $phonebookID"
     }
 }

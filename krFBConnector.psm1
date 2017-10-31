@@ -18,5 +18,7 @@ Foreach ($import in @($Public + $Private)) {
 
 # Set variables visible to the module and its functions only
 $port   # Security Port number of Fritz!Box
+$appDataDir = "$env:LOCALAPPDATA\Rehberger\krFBConnector"
+$logFilePath = (Join-Path -path $appDataDir -childpath "krFBConnector.log")
 
 Export-ModuleMember -Function $Public.Basename

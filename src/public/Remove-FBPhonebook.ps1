@@ -110,6 +110,8 @@ function Remove-FBPhonebook {
         $r = [xml]$w.UploadString("https://fritz.box:" + $port + "/upnp/control/x_contact", $query)
         write-debug $r
         Write-Verbose  -Message "Fritz!Box Phonebook with ID $phonebookID deleted."
+        Write-Log -message "Fritz!Box Phonebook with ID $phonebookID deleted"
+
     }
 
     end {

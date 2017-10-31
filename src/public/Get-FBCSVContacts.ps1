@@ -32,6 +32,7 @@ function Get-FBCSVContacts {
 
     begin {
         $contacts = Import-Csv -Path $CSVFilePath -Encoding UTF8
+        Write-Log -Message "$contacts.count contacts imported from CSV file $CSVFilePath"
     }
 
     process {

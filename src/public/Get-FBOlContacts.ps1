@@ -68,10 +68,12 @@ function Get-FBOlContacts {
         # create new Outlook object
         try {
             Write-Verbose -Message 'Connecting to Outlook session'
+            Write-Log -message 'Connecting to Outlook session'
             $comOutlook = new-object -comobject outlook.application
             if ($comOutlook) {Write-Verbose -Message 'Connected successfully.'}
         }
         catch {
+            Write-Log -message "Cannot start Outlook" -Severity 3
             throw ('Outlook not running. Try running Start-Outlook and then repeat command. ' + ($Error[0].Exception))
         }
 
@@ -86,10 +88,12 @@ function Get-FBOlContacts {
         Sensitivity
 
         write-host "Found a total of $($contacts.count) contacts from Outlook." -ForegroundColor Cyan
+        Write-Log -Message "Found a total of $($contacts.count) contacts from Outlook"
 
         if ($createCSV) {
             $Contacts | Export-Csv -path $csvFilePath -Encoding UTF8 -NoTypeInformation
             Write-Verbose "Contacts exported to file $csvFilePath"
+            Write-Log -Message "Contacts exported to file $csvFilePath"
             return
         }
 

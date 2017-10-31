@@ -113,6 +113,7 @@ function Get-FBPhonebook {
             $w.Headers.Clear()
             $w.DownloadFile($url, $phonebookPath)
             Write-Host "Fritz!Box phonebook with ID $phonebookID exported to file $phonebookPath"
+            Write-Log -message "Fritz!Box phonebook with ID $phonebookID exported to file $phonebookPath"
         }
     }
 
