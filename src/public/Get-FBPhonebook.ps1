@@ -60,7 +60,8 @@ function Get-FBPhonebook {
             ValueFromPipeline = $false)]
         [ValidateScript( {test-path -path (split-path -Path "$_")})]
         [String]
-        $phonebookPath = (Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -childpath "FBPhonebook_$phonebookID.xml")
+        # $phonebookPath = (Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -childpath "FBPhonebook_$phonebookID.xml")
+        $phonebookPath = (Join-Path -Path $script:appDataDir -childpath "FBPhonebook_$phonebookID.xml")
     )
 
     begin {

@@ -41,9 +41,5 @@ function Write-Log {
     }
 
     # Ensure that $appDataDir and $LogFilePath is set to a global variable at the top of script
-    # Create "appDataDir path if not exist"
-    if (!(test-path -Path $appDataDir)) {
-        new-item -ItemType Directory -path $appDataDir
-    }
-    $line | Export-Csv -Path $LogFilePath -Append -NoTypeInformation
+    $line | Export-Csv -Path $script:logFilePath -Append -NoTypeInformation
 }

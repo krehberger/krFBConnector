@@ -58,7 +58,8 @@ function Remove-FBPhonebook {
             ValueFromPipeline = $true)]
         [ValidateScript( {test-path -path (split-path -Path "$_")})]
         [String]
-        $backupPhonebookPath = (Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -childpath "Backup_FBPhonebook_$phonebookID.xml")
+        #$backupPhonebookPath = (Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -childpath "Backup_FBPhonebook_$phonebookID.xml")
+        $backupPhonebookPath = (Join-Path -Path script:$appDataDir -childpath "Backup_FBPhonebook_$phonebookID.xml")
     )
 
     begin {
