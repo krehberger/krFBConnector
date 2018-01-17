@@ -59,11 +59,14 @@ function Remove-FBPhonebook {
         [ValidateScript( {test-path -path (split-path -Path "$_")})]
         [String]
         #$backupPhonebookPath = (Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -childpath "Backup_FBPhonebook_$phonebookID.xml")
-        $backupPhonebookPath = (Join-Path -Path script:$appDataDir -childpath "Backup_FBPhonebook_$phonebookID.xml")
+        #$backupPhonebookPath = (Join-Path -Path $appDataDir -childpath "Backup_FBPhonebook_$phonebookID.xml")
+        $backupPhonebookPath
     )
 
     begin {
+
         if (!$port) {(Get-FBSecurityPort)}
+        if (!$backupPhonebookPath) {$backupPhonebookPath = (Join-Path -Path $appDataDir -childpath "Backup_FBPhonebook_$phonebookID.xml")}
 
         $w = New-Object System.Net.WebClient
         $w.Encoding = [system.text.encoding]::UTF8
@@ -118,4 +121,6 @@ function Remove-FBPhonebook {
     end {
     }
 }
+
+
 
