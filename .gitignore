@@ -4,3 +4,7 @@ build/
 *.cred
 pbook.xml
 docs/develop/
+_build
+_zip
+_testresults
+
