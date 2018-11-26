@@ -11,7 +11,7 @@ Properties {
 
   $ZipFolder = "$ProjectRoot\_zip"
   $VersionFolder = "$BuildFolder\$ModuleVersion"
-  $ReleaseNotesFile = "$ProjectRoot\source\ReleaseNotes.md"
+  #$ReleaseNotesFile = "$ProjectRoot\source\ReleaseNotes.md"
   $Timestamp = Get-date -uformat "%Y%m%d-%H%M%S"
   $PSVersion = $PSVersionTable.PSVersion.Major
   $TestsOutputFolder = "$ProjectRoot\_testresults\"
@@ -61,6 +61,15 @@ Task Build {
   $Null = Get-Content -Path "$ProjectRoot\$ModuleName.psm1" `
     | Select-Object -Last 20 `
     | Add-Content -Path $VersionFolder\$ModuleName.psm1
+
+  Write-Host "Copying file README.pdf"  -ForegroundColor Blue
+  $Null = Copy-Item   -Path "$ProjectRoot\README.pdf" -Destination "$VersionFolder\README.pdf" -Force
+
+  Write-Host "Copying file CHANGELOG.pdf"  -ForegroundColor Blue
+  $Null = Copy-Item   -Path "$ProjectRoot\CHANGELOG.pdf" -Destination "$VersionFolder\CHANGELOG.pdf" -Force
+
+  Write-Host "Copying file ExampleUpdateFBPhonebook.ps1"  -ForegroundColor Blue
+  $Null = Copy-Item   -Path "$ProjectRoot\ExampleUpdateFBPhonebook.ps1" -Destination "$VersionFolder\ExampleUpdateFBPhonebook.ps1" -Force
 
   Write-Host "Module built, verifying module output" -ForegroundColor Blue
   Get-Module -ListAvailable "$VersionFolder\$ModuleName.psd1" `
