@@ -26,6 +26,9 @@ Set-FBPhonebookEntry -phonebookID 1 -phonebookEntryID '4711'
     Author:         Klaus Rehberger
     Creation Date:  2017-09-19
     Purpose/Change: Initial script development
+    2017-10-17      Settings for parameter phonebookID and phonebookEntryID changed because
+                    of initialization issues when using the function in a command pipeline.
+    2017-10-18      Phonenumber types for 'fax' changed to 'fax_work' for Fritz!Box.
 
 #>
 function Set-FBPhonebookEntry {
@@ -42,8 +45,8 @@ function Set-FBPhonebookEntry {
         # Param phonebookID
         [Parameter(Mandatory = $true,
             Position = 1,
-            ValueFromPipeline = $true,
-            HelpMessage = "ID of the Fritz!Box phonebook (Fritz!Box Standard phonebook ID is 0).")]
+            ValueFromPipeline = $false,
+            HelpMessage = "ID of the Fritz!Box phonebook Fritz!Box - Standard phonebook ID is 0.")]
         [ValidateNotNullOrEmpty()]
         [int]
         $phonebookID,
@@ -53,9 +56,9 @@ function Set-FBPhonebookEntry {
             Position = 2,
             Mandatory = $false,
             HelpMessage = "Fritz!Box phonebook Entry ID",
-            ValueFromPipeline = $true)]
+            ValueFromPipeline = $false)]
         [String]
-        $phonebookEntryID = ""
+        $phonebookEntryID
     )
 
     begin {
@@ -64,8 +67,11 @@ function Set-FBPhonebookEntry {
             home
             work
             mobile
-            fax
+            other
+            fax_work
         }
+
+        $contactsCount = 0
 
         if (!$port) {(Get-FBSecurityPort)}
 
@@ -83,6 +89,8 @@ function Set-FBPhonebookEntry {
 
         # Deactivate certificate check of Webclient. Necessary because Fritz!Box has a selfsigned certificate.
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+        Write-Log -Message "Start adding contacts to Fritz!Box phonebook ID $phonebookID"
     }
 
     process {
@@ -115,7 +123,7 @@ function Set-FBPhonebookEntry {
 
         #$query.OuterXml | out-file "C:\Users\klaus\Documents\query_1.xml"
 
-        # Collection of phonenumbers for an contact
+        # Collection of phonenumbers for a contact
         $phoneNumbers = @()
 
         if ($contact.BusinessTelephoneNumber) {
@@ -160,7 +168,7 @@ function Set-FBPhonebookEntry {
         }
         if ($contact.OtherTelephoneNumber) {
             $props = @{
-                numberType = 'home'
+                numberType = 'other'
                 number     = $contact.OtherTelephoneNumber
             }
             $phoneNumber = New-Object -TypeName PSObject -Property $props
@@ -168,7 +176,7 @@ function Set-FBPhonebookEntry {
         }
         if ($contact.BusinessFaxNumber) {
             $props = @{
-                numberType = 'fax'
+                numberType = 'fax_work'
                 number     = $contact.BusinessFaxNumber
             }
             $phoneNumber = New-Object -TypeName PSObject -Property $props
@@ -176,7 +184,7 @@ function Set-FBPhonebookEntry {
         }
         if ($contact.HomeFaxNumber) {
             $props = @{
-                numberType = 'fax'
+                numberType = 'fax_work'
                 number     = $contact.HomeFaxNumber
             }
             $phoneNumber = New-Object -TypeName PSObject -Property $props
@@ -184,21 +192,25 @@ function Set-FBPhonebookEntry {
         }
         if ($contact.OtherFaxNumber) {
             $props = @{
-                numberType = 'fax'
+                numberType = 'fax_work'
                 number     = $contact.OtherFaxNumber
             }
             $phoneNumber = New-Object -TypeName PSObject -Property $props
             $phoneNumbers += $phoneNumber
         }
 
-        # Convert Umlaute
+        # Convert special characters
         # Currently Umlaute are not right converted to Fritz!Box phonebook via SetPhonebookEntry action
-        $FileAsConv = Convert-Umlaut -value $Contact.FileAs
+        $FileAsConv = Convert-SpecialCharacter -value $Contact.FileAs
         $query.Envelope.Body.SetPhonebookEntry.NewPhonebookEntryData.contact.person.realName = $FileAsConv
 
+        Write-Verbose -Message $FileAsConv
+        Write-Log -message "Add contact $FileAsConv"
+
         for ($i = 0; $i -lt $phoneNumbers.length; $i++) {
-            Write-Output $phoneNumbers[$i].numberType
-            Write-Output $phoneNumbers[$i].number
+            Write-Verbose "$($phoneNumbers[$i].numberType): $($phoneNumbers[$i].number)"
+            Write-Log "$($phoneNumbers[$i].numberType): $($phoneNumbers[$i].number)"
+
             $number = $query.Envelope.Body.SetPhonebookEntry.NewPhonebookEntryData.contact.telephony
             $xmlEntry = '<number type="{0}" quickdial="" vanity="" prio="1" >{1}</number>' -f $phoneNumbers[$i].numberType, $phoneNumbers[$i].number
             $newNumber = [XML] $xmlEntry
@@ -212,9 +224,14 @@ function Set-FBPhonebookEntry {
 
         $r = [xml]$w.UploadString("https://fritz.box:" + $port + "/upnp/control/x_contact", $query.OuterXml)
         write-debug $r
-        Write-Verbose -Message "Contact $($contact.FileAs) uploaded to Fritz!Box phonebook."
+        Write-Verbose -Message "Contact $($contact.FileAs) added to Fritz!Box phonebook."
+        Write-Log -message "Contact $($contact.FileAs) added to Fritz!Box phonebook"
+
+        $contactsCount += 1
     }
 
     end {
+        write-host "Added a total of $contactsCount contacts to Fritz!Box phonebook." -ForegroundColor Cyan
+        Write-Log "Added a total of $contactsCount contacts to Fritz!Box phonebook with ID $phonebookID"
     }
 }

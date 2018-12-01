@@ -67,6 +67,7 @@ function Add-FBPhonebook {
 
         $r = [xml]$w.UploadString("https://fritz.box:" + $port + "/upnp/control/x_contact", $query)
         Write-Verbose  -Message "Fritz!Box Phonebook with name $phonebookName created."
+        Write-Log -Message "Fritz!Box Phonebook with name $phonebookName created"
     }
 
     end {

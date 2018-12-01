@@ -53,6 +53,7 @@ function Get-FBExternalIP {
 
         $r = [xml]$w.UploadString("https://fritz.box:" + $port + "/upnp/control/wanpppconn1", $query)
         "External IP address: " + $r.envelope.body.GetExternalIPAddressResponse.NewExternalIPAddress
+        Write-Log -Message "External IP Address: $r.envelope.body.GetExternalIPAddressResponse.NewExternalIPAddress"
     }
 
     end {

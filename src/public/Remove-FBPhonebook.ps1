@@ -58,11 +58,15 @@ function Remove-FBPhonebook {
             ValueFromPipeline = $true)]
         [ValidateScript( {test-path -path (split-path -Path "$_")})]
         [String]
-        $backupPhonebookPath = (Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -childpath "Backup_FBPhonebook_$phonebookID.xml")
+        #$backupPhonebookPath = (Join-Path -Path ([Environment]::GetFolderPath('MyDocuments')) -childpath "Backup_FBPhonebook_$phonebookID.xml")
+        #$backupPhonebookPath = (Join-Path -Path $appDataDir -childpath "Backup_FBPhonebook_$phonebookID.xml")
+        $backupPhonebookPath
     )
 
     begin {
+
         if (!$port) {(Get-FBSecurityPort)}
+        if (!$backupPhonebookPath) {$backupPhonebookPath = (Join-Path -Path $appDataDir -childpath "Backup_FBPhonebook_$phonebookID.xml")}
 
         $w = New-Object System.Net.WebClient
         $w.Encoding = [system.text.encoding]::UTF8
@@ -71,7 +75,7 @@ function Remove-FBPhonebook {
             try {
                 $ErrorActionPreference = 'Stop'
                 $pbook = get-fbPhonebook -phonebookID $phonebookID -export -phonebookpath $backupPhonebookPath
-                Write-Verbose -Message "Fritz!Box Phonebook with ID $phonebookID, name: $pbook.name saved on $backupPhonebookPath."
+                # Write-Verbose -Message "Fritz!Box Phonebook with ID $phonebookID, name: $($pbook.name) saved on $backupPhonebookPath."
             }
             catch {
                 throw ("Cannot find phonebook with ID $phonebookID. " + ($Error[0].Exception))
@@ -110,9 +114,13 @@ function Remove-FBPhonebook {
         $r = [xml]$w.UploadString("https://fritz.box:" + $port + "/upnp/control/x_contact", $query)
         write-debug $r
         Write-Verbose  -Message "Fritz!Box Phonebook with ID $phonebookID deleted."
+        Write-Log -message "Fritz!Box Phonebook with ID $phonebookID deleted"
+
     }
 
     end {
     }
 }
+
+
 

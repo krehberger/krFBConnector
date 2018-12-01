@@ -38,6 +38,8 @@ function Get-FBSecurityPort {
     # Save TCP security port number in script level variable $port
     $script:port = $r.envelope.body.GetSecurityPortResponse.NewSecurityPort
 
+    Write-Log -message "Fritz!Box security port is: $script:port"
+
 }
 
 

@@ -12,7 +12,7 @@
     RootModule        = 'krFBConnector.psm1'
 
     # Die Versionsnummer dieses Moduls
-    ModuleVersion     = '0.1.0'
+    ModuleVersion     = '1.0.0'
 
     # Unterstützte PSEditions
     # CompatiblePSEditions = @()
@@ -27,7 +27,7 @@
     CompanyName       = 'Rehberger Software Solutions (RSS)'
 
     # Urheberrechtserklärung für dieses Modul
-    Copyright         = '(c) 2017 Klaus Rehberger. Alle Rechte vorbehalten.'
+    Copyright         = '(c) 2018 Klaus Rehberger. Alle Rechte vorbehalten.'
 
     # Beschreibung der von diesem Modul bereitgestellten Funktionen
     Description       = 'Module with functions for connecting to a Fritz!Box based on TR-064 (SOAP Interface).'

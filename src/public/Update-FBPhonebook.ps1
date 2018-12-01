@@ -98,6 +98,9 @@ function Update-FBPhonebook {
         $phonebookID = Get-FBPhonebookList | ForEach-Object {if ((Get-FBPhonebook -phonebookid $_).name -eq $pbName) {$_; return}
         }
     }
+
+    Write-Log -message "Start updating Fritz!Box phonebook $pbName"
+
     if ($phonebookID) {
         Remove-FBPhonebook -phonebookID $phonebookID -backupBefore
     }
@@ -110,5 +113,7 @@ function Update-FBPhonebook {
         }
     }
     Get-FBOlContacts -category $category | Set-FBPhonebookEntry -phonebookID $phonebookID
+
+    Write-Log -message "End of updating Fritz!Box phonebook $phonebookName"
 
 }
