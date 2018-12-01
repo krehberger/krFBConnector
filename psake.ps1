@@ -122,5 +122,6 @@ Task Test -Depends Analyze {
 Task WinZip -depends Test {
   $FileName = "$ZipFolder\$ModuleName.$ModuleVersion.zip"
   Compress-Archive -Path $BuildFolder -DestinationPath $FileName -Force
+  $null = Copy-Item -Path $FileName -Destination "$ZipFolder\$ModuleName.zip" -Force
 }
 
