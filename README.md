@@ -11,6 +11,10 @@ iex (new-object System.Net.WebClient).DownloadString('https://raw.githubusercont
 
 ```
 
+## *** **Important** ***
+
+ >When using the cmdlet 'Get-FBOlContacts':</br>If you have a 32 bit version of office installed, Powershell should **also** be running from x86 and not 64 bit!
+
 ## Features
 
 Currently the following cmdlets are implemented:
@@ -37,10 +41,6 @@ Categories, CreationTime, LastModificationTime, FullName, FileAs, BusinessTeleph
 
 * **Get-FBExternalIP**</br>Get's the external IP address
 
-## *** **Important** ***
-
- >When using the cmdlet 'Get-FBOlContacts':</br>If you have a 32 bit version of office installed, Powershell should **also** be running from x86 and not 64 bit!
-
 ## Usage Examples
 
 ### Add-FBPhonebook
@@ -52,7 +52,7 @@ Add-FBPhoenbook -phonebookName MyPhonebook
 ## Update-FBPhonebook
 
 ```Powershell
-Update-FBPhonebook -pbName MyPhonebook</br>
+Update-FBPhonebook -pbName MyPhonebook
 Update-FBPhonebook -pbID 1 -category FritzBox -pbName MyPhoenbook
 ```
 
