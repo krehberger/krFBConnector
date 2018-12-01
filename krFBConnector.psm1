@@ -25,4 +25,13 @@ if (-not(test-path -Path $script:appDataDir)) {
 }
 $script:logFilePath = (Join-Path -path $script:appDataDir -childpath "krFBConnector.log")
 
-Export-ModuleMember -Function $Public.Basename
+#Export-ModuleMember -Function $Public.Basename
+Export-ModuleMember -Function   'Add-FBPhonebook',
+                                'Get-FBCSVContacts',
+                                'Get-FBExternalIP',
+                                'Get-FBOlContacts',
+                                'Get-FBPhonebook',
+                                'Get-FBPhonebookList',
+                                'Remove-FBPhonebook',
+                                'Set-FBPhonebookEntry',
+                                'Update-FBPhonebook'

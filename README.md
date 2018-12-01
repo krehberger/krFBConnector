@@ -1,27 +1,70 @@
 # Fritz!Box Connector
+
 Windows Powershell module which use the Fritz!Box TR64-Api Webservices. In a first version cmdlets for creating and updating Fritz!Box phonebooks are impleted.
+
 ## Installation
-_Manually_
-The module can be installed manually through downloading the Github Repo file "krFBConnector.zip" to the directory _$HOME\WindowsPowershell\Modules_ and decrompressing the zip file.
 
-_With InstallModuleFromGitHub_
-If you have installed the module  ["InstallModuleFromGitHub"](https://dfinke.github.io/2016/Quickly-Install-PowerShell-Modules-from-GitHub/) from Doug Finke you can install the module with the powershell command
-_Install-ModuleFromGitHub -GitHubRepo krehberger/krFBConnector -Branch develop -verbose_. Be aware that the branch "develop" has the last beta version of the module!
-The module "InstallModuleFromGitHub" can be installed with
- _Install-Module -Name InstallModuleFromGitHub -RequiredVersion 0.3_.
+To install the module in the personal modules folder run:
 
- ## Usage
+```Powershell
+iex (new-object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/krehberger/krFBConnector/master/Install.ps1')
 
- Currently the following cmdlets are implemented:
-* **Update-FBPhonebook**
- Updates the Fritz!Box phonebook with contacts from Microsoft Outlook.
-* **Set-FBPhonebookEntry**
-Adds new phonebook entries to a Fritz!Box phonebook.
-* **Remove-FBPhonebook**
-Removes a phonebook from the Fritz!Box.
-* **Get-GBPhonebookList**
-Shows all available phonebooks on the Fritz!Box.
-* **Get-FBPhonebook**
-Exports a Fritz!Box phonebook to an xml file.
-* **Get-FBOlContacts**
-Reads Microsoft Outlook contacts.
+```
+
+## *** **Important** ***
+
+ >When using the cmdlet 'Get-FBOlContacts':</br>If you have a 32 bit version of office installed, Powershell should **also** be running from x86 and not 64 bit!
+
+## Features
+
+Currently the following cmdlets are implemented:
+
+* **Add-FBPhonebook**</br>Adds a new phone book to the Fritz!Box.
+
+* **Update-FBPhonebook**</br>Updates the Fritz!Box phone book with contacts from Microsoft Outlook. If the phone book to be updated does not exist, a new one is created.
+
+* **Set-FBPhonebookEntry**</br>Adds new phone book entries to a Fritz!Box phonebook.
+
+* **Remove-FBPhonebook**</br>Removes a phone book from the Fritz!Box.
+
+* **Get-FBPhonebookList**</br>Shows all available phone books on the Fritz!Box.
+
+* **Get-FBPhonebook**</br>Exports a Fritz!Box phone book to an xml file.
+
+* **Get-FBOlContacts**</br>Reads Microsoft Outlook contacts.
+
+* **Get-FBCSVContacts**</br>Reads contacts from an CSV file.</br>The CSV file must have the following fields:
+
+```CSV
+Categories, CreationTime, LastModificationTime, FullName, FileAs, BusinessTelephoneNumber, Business2TelephoneNumber, HomeTelephoneNumber, Home2TelephoneNumber, MobileTelephoneNumber, OtherTelephoneNumber, BusinessFaxNumber, HomeFaxNumber, OtherFaxNumber, Sensitivity
+```
+
+* **Get-FBExternalIP**</br>Get's the external IP address
+
+## Usage Examples
+
+### Add-FBPhonebook
+
+```Powershell
+Add-FBPhoenbook -phonebookName MyPhonebook
+```
+
+## Update-FBPhonebook
+
+```Powershell
+Update-FBPhonebook -pbName MyPhonebook
+Update-FBPhonebook -pbID 1 -category FritzBox -pbName MyPhoenbook
+```
+
+## Get-FBOlContacts
+
+```Powershell
+Get-FBOlContacts -category FritzBox -CreateCSV  csvFilePath "c:\temp"
+Get-FBOlContacts
+```
+
+## Set-FBPhonebookEntry
+
+```Powershell
+Get-FBOlContacts -category FritzBox | Set-FBPhonebookEntry -phonebookID 2
+```
