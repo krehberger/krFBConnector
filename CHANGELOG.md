@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-Following external cmdlets in the initial release:
+Following external cmdlets are in the initial release:
 
 * Update-FBPhonebook
 * Set-FBPhonebookEntry
