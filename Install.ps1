@@ -52,4 +52,4 @@ Expand-Archive $download_path -DestinationPath $user_module_path[0] -Force
 # Removing temp files
 Remove-Item $download_path -Force
 
-write-host "Module $name installed in the directory $user_module_path[0]"
+write-host "Module $name installed in the directory $user_module_path\$name"
