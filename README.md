@@ -1,6 +1,6 @@
 # Fritz!Box Connector
 
-Windows Powershell module which use the Fritz!Box TR64-Api Webservices. In a first version cmdlets for creating and updating Fritz!Box phonebooks are impleted.
+Windows Powershell module which use the Fritz!Box TR64-Api Webservices. In a first version cmdlets for creating and updating Fritz!Box phonebooks are implemented.
 
 ## Installation
 
@@ -13,7 +13,18 @@ iex (new-object System.Net.WebClient).DownloadString('https://raw.githubusercont
 
 ## *** **Important** ***
 
- >When using the cmdlet 'Get-FBOlContacts':</br>If you have a 32 bit version of office installed, Powershell should **also** be running from x86 and not 64 bit!
+ >When using the cmdlet 'Get-FBOlContacts':</br>If you have a 32 bit version of office installed, Powershell should **also** be running from x86 and not 64 bit!</br>If the module 'krFBConnector' cannot be loaded please check your Powershell ExecutionPolicy with
+>
+>``` Powershell
+>Get-Executionpolicy
+> ```
+>
+>and set it to 'RemoteSigned' with
+>
+>``` Powershell
+> Set-Executionpolicy RemoteSigned -scope CurrentUser
+> ```
+>if necessary.
 
 ## Features
 
