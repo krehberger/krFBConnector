@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Cmdlet New-FBShortcut
+
 
 ## [1.0.0] - 2018-11-25 (Initial Release)
 

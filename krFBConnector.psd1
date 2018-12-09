@@ -12,7 +12,7 @@
     RootModule        = 'krFBConnector.psm1'
 
     # Die Versionsnummer dieses Moduls
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '1.1.0'
 
     # Unterstützte PSEditions
     # CompatiblePSEditions = @()
@@ -78,7 +78,8 @@
     'Get-FBPhonebookList',
     'Remove-FBPhonebook',
     'Set-FBPhonebookEntry',
-    'Update-FBPhonebook'
+    'Update-FBPhonebook',
+    'New-FBShortcut'
 
     # Aus diesem Modul zu exportierende Cmdlets. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Cmdlets vorhanden sind.
     CmdletsToExport   = '*'
