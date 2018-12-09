@@ -34,4 +34,5 @@ Export-ModuleMember -Function   'Add-FBPhonebook',
                                 'Get-FBPhonebookList',
                                 'Remove-FBPhonebook',
                                 'Set-FBPhonebookEntry',
-                                'Update-FBPhonebook'
+                                'Update-FBPhonebook',
+                                'New-FBShortcut'
