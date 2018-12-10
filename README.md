@@ -52,7 +52,7 @@ Categories, CreationTime, LastModificationTime, FullName, FileAs, BusinessTeleph
 
 * **Get-FBExternalIP**</br>Get's the external IP address
 
-* **New-FBShortcut**</br>Creates a shortcut on the Desktop and then Startmenu for updating your Fritz!Box phonebook
+* **New-FBShortcut**</br>Creates a shortcut on the Desktop and the Startmenu for updating your Fritz!Box phonebook
 
 ## Usage Examples
 
