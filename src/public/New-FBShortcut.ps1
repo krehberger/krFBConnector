@@ -42,7 +42,7 @@ function New-FBShortcut {
 
 
     begin {
-        $ShortcutLocation = "$env:USERPROFILE\Desktop\, C:\ProgramData\Microsoft\Windows\Start Menu\Programs\"
+        $ShortcutLocation = "$env:USERPROFILE\Desktop\, $env:USERPROFILE\Start Menu\Programs\krFBConnector\"
         $SourceFileLocation = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
         $lnkName = "UpdateFBPhonebook"
         $IconLocation = "C:\Windows\System32\shell32.dll"
@@ -56,23 +56,30 @@ function New-FBShortcut {
 
         $lnkArgument = "-Nop -Executionpolicy bypass -NoExit & ""$HOME\Documents\WindowsPowershell\Modules\krFBConnector\_UpdateFBPhonebook.ps1"""
 
+        # Remove existing Startmenu directory
+        Remove-Item -Path "$env:USERPROFILE\Start Menu\Programs\krFBConnector" -Recurse -Force -Confirm:$false
+
+        # Create new Startmneu directory
+        if (!(Test-Path -Path "$env:USERPROFILE\Start Menu\Programs\krFBConnector")) {
+            New-Item -Path "$env:USERPROFILE\Start Menu\Programs\krFBConnector" -ItemType Directory -Force
+        }
     }
 
     process {
         $ShortcutLocation = $ShortcutLocation.split(",")
 
         foreach ($dir in $ShortcutLocation) {
-            #create the shortcut object
+            # create the shortcut object
             $WshShell = New-Object -ComObject WScript.Shell
             $Shortcut = $WshShell.CreateShortcut("$($dir)$($lnkName).lnk")
 
-            #program the shortcut will open
+            # program the shortcut will open
             $Shortcut.TargetPath = $SourceFileLocation
-            #icon location & Id that the shortcut will use
+            # icon location & Id that the shortcut will use
             $Shortcut.IconLocation = "$IconLocation,$IconId"
-            #any extra parameters that the shortcut may have
+            # any extra parameters that the shortcut may have
             $Shortcut.Arguments = "$lnkArgument"
-            #save the modifications
+            # save the modifications
             $Shortcut.Save()
 
         }
