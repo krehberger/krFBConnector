@@ -42,7 +42,8 @@ function New-FBShortcut {
 
 
     begin {
-        $ShortcutLocation = "$env:USERPROFILE\Desktop\, $env:USERPROFILE\Start Menu\Programs\krFBConnector\"
+        $startMenuLocation = ([system.environment]::getfolderpath("StartMenu")) + '\Programs'
+        $ShortcutLocation = "$env:USERPROFILE\Desktop\"
         $SourceFileLocation = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
         $lnkName = "UpdateFBPhonebook"
         $IconLocation = "C:\Windows\System32\shell32.dll"
@@ -54,15 +55,7 @@ function New-FBShortcut {
         $RunScript -f $pbname, $category |
             out-file -FilePath "$Home\Documents\WindowsPowerShell\Modules\krFBConnector\_UpdateFBPhonebook.ps1" -force
 
-        $lnkArgument = "-Nop -Executionpolicy bypass -NoExit & ""$HOME\Documents\WindowsPowershell\Modules\krFBConnector\_UpdateFBPhonebook.ps1"""
-
-        # Remove existing Startmenu directory
-        Remove-Item -Path "$env:USERPROFILE\Start Menu\Programs\krFBConnector" -Recurse -Force -Confirm:$false
-
-        # Create new Startmneu directory
-        if (!(Test-Path -Path "$env:USERPROFILE\Start Menu\Programs\krFBConnector")) {
-            New-Item -Path "$env:USERPROFILE\Start Menu\Programs\krFBConnector" -ItemType Directory -Force
-        }
+        $lnkArgument = "-Nop -Executionpolicy bypass -NoExit & ""$HOME\Documents\WindowsPowershell\Modules\krFBConnector\_UpdateFBPhonebook.ps1"" -pbName $pbName -category $category"
     }
 
     process {
@@ -81,6 +74,9 @@ function New-FBShortcut {
             $Shortcut.Arguments = "$lnkArgument"
             # save the modifications
             $Shortcut.Save()
+
+            # Copy created link to Startmenu
+            copy-item "$($dir)$($lnkName).lnk" -destination $startMenuLocation
 
         }
     }
