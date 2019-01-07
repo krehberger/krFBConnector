@@ -99,21 +99,31 @@ function Update-FBPhonebook {
         }
     }
 
-    Write-Log -message "Start updating Fritz!Box phonebook $pbName"
+    $olOutlookContacts =  Get-FBOlContacts -category $category
 
-    if ($phonebookID) {
-        Remove-FBPhonebook -phonebookID $phonebookID -backupBefore
-    }
+    # Update phonebook only when Outlook contacts were found
+    if (($olOutlookContacts.count) -gt 0) {
 
-    Add-FBPhonebook -phonebookName $phonebookName
+        Write-Log -message "Start updating Fritz!Box phonebook $pbName"
 
-    if ($pSet -eq 'PbName') {
-        # Find $phonebookID with name $pbName in Fritz!Box phonebooklist
-        $phonebookID = Get-FBPhonebookList | ForEach-Object {if ((Get-FBPhonebook -phonebookid $_).name -eq $pbName) {$_; return}
+        if ($phonebookID) {
+            Remove-FBPhonebook -phonebookID $phonebookID -backupBefore
         }
-    }
-    Get-FBOlContacts -category $category | Set-FBPhonebookEntry -phonebookID $phonebookID
 
-    Write-Log -message "End of updating Fritz!Box phonebook $phonebookName"
+        Add-FBPhonebook -phonebookName $phonebookName
+
+        if ($pSet -eq 'PbName') {
+            # Find $phonebookID with name $pbName in Fritz!Box phonebooklist
+            $phonebookID = Get-FBPhonebookList | ForEach-Object {if ((Get-FBPhonebook -phonebookid $_).name -eq $pbName) {$_; return}
+            }
+        }
+        $olOutlookContacts | Set-FBPhonebookEntry -phonebookID $phonebookID
+
+        Write-Log -message "End of updating Fritz!Box phonebook $phonebookName"
+    }
+    else {
+        write-log -message "No contacts found for updating the phonebook $pbname"
+        write-host "No contacts found for updating the phonebook $pbname" -ForegroundColor Cyan
+    }
 
 }

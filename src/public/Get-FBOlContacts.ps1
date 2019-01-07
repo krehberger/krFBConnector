@@ -27,10 +27,12 @@ Get-FBOlContacts -CreateCSV -csvFilePath "c:\temp"
 Get-FBOlContacts -category "Phonebook" -CreateCSV -csvFilePath "c:\temp"
 
 .NOTES
-    Version:        1.0
+    Version:        2.0
     Author:         Klaus Rehberger
     Creation Date:  2017-09-19
-    Purpose/Change: Initial script development
+    Last Update:    2019-01-02
+    Purpose/Change: 1.0     Initial script development
+                    2.0     Refactoring Outlook access
 #>
 
 function Get-FBOlContacts {
@@ -62,44 +64,69 @@ function Get-FBOlContacts {
     )
 
     begin {
+        try {
+            Add-Type -assembly "Microsoft.Office.Interop.Outlook" -ErrorAction Stop -ErrorVariable "OutlookError"
+            Write-Verbose -Message 'Connecting to Outlook session'
+            Write-Log -message 'Connecting to Outlook session'
+
+            $comOutlook = New-Object -comobject outlook.application -ErrorAction stop -ErrorVariable "ApplicationError"
+            $namespace = $comOutlook.GetNameSpace("MAPI")
+            $contactObject = $namespace.GetDefaultFolder([Microsoft.Office.Interop.Outlook.OlDefaultFolders]::olFolderContacts)
+            $contactList = $contactObject.Items | where-object {$_.categories -like "*$category*"}
+
+            write-host "Found a total of $($contactList.count) contacts from Outlook." -ForegroundColor Cyan
+            Write-Log -Message "Found a total of $($contactList.count) contacts from Outlook"
+        }
+
+        # Catch all other exceptions thrown by one of those commands
+        catch {
+            Write-Log -message "Cannot start Outlook" -Severity 3
+            $OutlookError
+            $ApplicationError
+            if ([Environment]::Is64BitProcess) {
+                throw ('Powershell must run in 32 bit mode to access Outlook 32 bit')
+            }
+
+        }
+        # Execute these commands even if there is an exception thrown from the try block
+        finally {
+        }
+
     }
 
     process {
-        # create new Outlook object
-        try {
-            Write-Verbose -Message 'Connecting to Outlook session'
-            Write-Log -message 'Connecting to Outlook session'
-            $comOutlook = new-object -comobject outlook.application
-            if ($comOutlook) {Write-Verbose -Message 'Connected successfully.'}
+        foreach ( $name in $contactList ) {
+            # More contact field details from this link => : http://msdn.microsoft.com/en-us/library/ee160254(v=exchg.80).aspx
+            $props = @{
+                'Categories'               = $name.Categories;
+                'CreationTime'             = $name.CreationTime;
+                'LastModificationTime'     = $name.LastModificationTime;
+                'FullName'                 = $name.FullName;
+                'FileAs'                   = $name.FileAs;
+                'BusinessTelephoneNumber'  = $name.BusinessTelephoneNumber;
+                'Business2TelephoneNumber' = $name.Business2TelephoneNumber;
+                'HomeTelephoneNumber'      = $name.HomeTelephoneNumber;
+                'Home2TelephoneNumber'     = $name.Home2TelephoneNumber;
+                'MobileTelephoneNumber'    = $name.MobileTelephoneNumber;
+                'OtherTelephoneNumber'     = $name.OtherTelephoneNumber;
+                'BusinessFaxNumber'        = $name.BusinessFaxNumber;
+                'HomeFaxNumber'            = $name.HomeFaxNumber;
+                'OtherFaxNumber'           = $name.OtherFaxNumber;
+                'Sensitivity'              = $name.Sensitivity
+            }
+            $contact = New-Object -TypeName PsObject -Property $props
+            Write-Output $contact
         }
-        catch {
-            Write-Log -message "Cannot start Outlook" -Severity 3
-            throw ('Outlook not running. Try running Start-Outlook and then repeat command. ' + ($Error[0].Exception))
-        }
-
-        # Set Outlook folder (contacts)
-        $objContacts = $comOutlook.Session.GetDefaultFolder(10)
-
-
-        $Contacts = $objContacts.Items | where-object {$_.categories -like "*$category*"} |
-            select-object Categories, CreationTime, LastModificationTime, FullName, FileAs,
-        BusinessTelephoneNumber, Business2TelephoneNumber, HomeTelephoneNumber, Home2TelephoneNumber,
-        MobileTelephoneNumber, OtherTelephoneNumber, BusinessFaxNumber, HomeFaxNumber, OtherFaxNumber,
-        Sensitivity
-
-        write-host "Found a total of $($contacts.count) contacts from Outlook." -ForegroundColor Cyan
-        Write-Log -Message "Found a total of $($contacts.count) contacts from Outlook"
 
         if ($createCSV) {
-            $Contacts | Export-Csv -path $csvFilePath -Encoding UTF8 -NoTypeInformation
+            $ContactList | Export-Csv -path $csvFilePath -Encoding UTF8 -NoTypeInformation
             Write-Verbose "Contacts exported to file $csvFilePath"
             Write-Log -Message "Contacts exported to file $csvFilePath"
-            return
         }
 
-        Write-Output $Contacts
-
     }
+
     end {
+
     }
 }
