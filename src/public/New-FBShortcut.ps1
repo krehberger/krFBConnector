@@ -44,7 +44,7 @@ function New-FBShortcut {
     begin {
         $startMenuLocation = ([system.environment]::getfolderpath("StartMenu")) + '\Programs'
         $ShortcutLocation = "$env:USERPROFILE\Desktop\"
-        $SourceFileLocation = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+        $SourceFileLocation = "C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell.exe"
         $lnkName = "UpdateFBPhonebook"
         $IconLocation = "C:\Windows\System32\shell32.dll"
         $IconId = 130
@@ -55,7 +55,7 @@ function New-FBShortcut {
         $RunScript -f $pbname, $category |
             out-file -FilePath "$Home\Documents\WindowsPowerShell\Modules\krFBConnector\_UpdateFBPhonebook.ps1" -force
 
-        $lnkArgument = "-Nop -Executionpolicy bypass -NoExit & ""$HOME\Documents\WindowsPowershell\Modules\krFBConnector\_UpdateFBPhonebook.ps1"" -pbName $pbName -category $category"
+        $lnkArgument = "-Nop -Executionpolicy bypass -NoExit & ""$HOME\Documents\WindowsPowershell\Modules\krFBConnector\_UpdateFBPhonebook.ps1"""
     }
 
     process {
