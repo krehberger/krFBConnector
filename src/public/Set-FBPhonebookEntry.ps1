@@ -22,13 +22,14 @@ Set-FBPhonebookEntry -phonebookID 1
 Set-FBPhonebookEntry -phonebookID 1 -phonebookEntryID '4711'
 
 .NOTES
-    Version:        1.0
+    Version:        1.2
     Author:         Klaus Rehberger
     Creation Date:  2017-09-19
     Purpose/Change: Initial script development
     2017-10-17      Settings for parameter phonebookID and phonebookEntryID changed because
                     of initialization issues when using the function in a command pipeline.
     2017-10-18      Phonenumber types for 'fax' changed to 'fax_work' for Fritz!Box.
+    2019-01-07      Added phonebookname to message 
 
 #>
 function Set-FBPhonebookEntry {
@@ -46,7 +47,7 @@ function Set-FBPhonebookEntry {
         [Parameter(Mandatory = $true,
             Position = 1,
             ValueFromPipeline = $false,
-            HelpMessage = "ID of the Fritz!Box phonebook Fritz!Box - Standard phonebook ID is 0.")]
+            HelpMessage = "ID of the Fritz!Box phonebook, Fritz!Box - Standard phonebook ID is 0.")]
         [ValidateNotNullOrEmpty()]
         [int]
         $phonebookID,
@@ -231,7 +232,8 @@ function Set-FBPhonebookEntry {
     }
 
     end {
-        write-host "Added a total of $contactsCount contacts to Fritz!Box phonebook." -ForegroundColor Cyan
-        Write-Log "Added a total of $contactsCount contacts to Fritz!Box phonebook with ID $phonebookID"
+        $phonebookName = (Get-FBPhonebook -phonebookID $phonebookID).name
+        write-host "Added a total of $contactsCount contacts to Fritz!Box phonebook '$phonebookName'." -ForegroundColor Cyan
+        Write-Log "Added a total of $contactsCount contacts to Fritz!Box phonebook with ID $phonebookID and name '$phonebookName'"
     }
 }
