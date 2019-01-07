@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Access to Outlook contacts redesigned
 
+### Fixed
+
+- If no Outlook contacts could be found the exisiting phonebook will not be updated
+
 ## [1.1.0] - 2018-12-10
 
 ### Changed
